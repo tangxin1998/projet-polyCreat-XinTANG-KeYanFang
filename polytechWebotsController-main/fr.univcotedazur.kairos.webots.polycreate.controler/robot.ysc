@@ -21,7 +21,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_4vCLoDh_EeyUwYiOwLcp9Q" name="turning right" incomingTransitions="_68aCIDh_EeyUwYiOwLcp9Q">
             <outgoingTransitions xmi:id="_A5d2cDiAEeyUwYiOwLcp9Q" specification="after 500ms" target="_sOjtoDh_EeyUwYiOwLcp9Q"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_DdlZADiAEeyUwYiOwLcp9Q" name="turning left" incomingTransitions="_E0pSkDiAEeyUwYiOwLcp9Q">
+          <vertices xsi:type="sgraph:State" xmi:id="_DdlZADiAEeyUwYiOwLcp9Q" specification="entry/raise leftTurn" name="turning left" incomingTransitions="_E0pSkDiAEeyUwYiOwLcp9Q">
             <outgoingTransitions xmi:id="_K9-oUDiAEeyUwYiOwLcp9Q" specification="after 500ms" target="_sOjtoDh_EeyUwYiOwLcp9Q"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_uLh3ADiHEeyUwYiOwLcp9Q" name="turning back" incomingTransitions="_zxQJYDiHEeyUwYiOwLcp9Q">

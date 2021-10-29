@@ -30,6 +30,8 @@ import com.cyberbotics.webots.controller.Robot;
 import com.cyberbotics.webots.controller.Supervisor;
 import com.cyberbotics.webots.controller.TouchSensor;
 
+import fr.unice.polytech.si4.fsm.stopwatch.RobotStateMachine;
+
 public class PolyCreateControler extends Supervisor {
 
 	static int MAX_SPEED = 16;
@@ -40,6 +42,8 @@ public class PolyCreateControler extends Supervisor {
 	static double WHEEL_RADIUS = 0.031;//轮半径
 	static double AXLE_LENGTH = 0.271756;//轴长
 	static double ENCODER_RESOLUTION = 507.9188;//
+	public RobotStateMachine theFSM;
+	
 
 	/**
 	 * the inkEvaporation parameter in the WorldInfo element of the robot scene may be interesting to access
@@ -92,6 +96,8 @@ public class PolyCreateControler extends Supervisor {
 	public PolyCreateControler() {
 		timestep = (int) Math.round(this.getBasicTimeStep());//round四舍五入证书，时间步骤
 
+		theFSM = new RobotStateMachine(); 
+		theFSM.enter();
 
 		
 		
