@@ -37,9 +37,9 @@ public class PolyCreateControler extends Supervisor {
 	static int HALF_SPEED = 8;
 	static int MIN_SPEED = -16;
 
-	static double WHEEL_RADIUS = 0.031;
-	static double AXLE_LENGTH = 0.271756;
-	static double ENCODER_RESOLUTION = 507.9188;
+	static double WHEEL_RADIUS = 0.031;//轮半径
+	static double AXLE_LENGTH = 0.271756;//轴长
+	static double ENCODER_RESOLUTION = 507.9188;//
 
 	/**
 	 * the inkEvaporation parameter in the WorldInfo element of the robot scene may be interesting to access
@@ -54,7 +54,7 @@ public class PolyCreateControler extends Supervisor {
 	public Motor[] gripMotors = new Motor[2];
 	public DistanceSensor gripperSensor = null;
 
-	public Motor leftMotor = null;
+	public Motor leftMotor = null;//左马达
 	public Motor rightMotor = null;
 
 	public PositionSensor leftSensor = null;
@@ -64,10 +64,10 @@ public class PolyCreateControler extends Supervisor {
 	public LED ledPlay = null;
 	public LED ledStep = null;
 
-	public TouchSensor leftBumper = null;
+	public TouchSensor leftBumper = null;//bumper保险杠，接触传感器
 	public TouchSensor rightBumper = null;
 
-	public DistanceSensor leftCliffSensor = null;
+	public DistanceSensor leftCliffSensor = null;//cliff悬崖，距离传感器有左/右/前左/前右方向
 	public DistanceSensor rightCliffSensor = null;
 	public DistanceSensor frontLeftCliffSensor = null;
 	public DistanceSensor frontRightCliffSensor = null;
@@ -76,7 +76,7 @@ public class PolyCreateControler extends Supervisor {
 	public DistanceSensor frontLeftDistanceSensor = null;
 	public DistanceSensor frontRightDistanceSensor = null;
 	
-	public Camera frontCamera = null;
+	public Camera frontCamera = null;//前置与后置摄像头
 	public Camera backCamera = null;
 
 	public Receiver receiver = null;
@@ -90,7 +90,7 @@ public class PolyCreateControler extends Supervisor {
 
 
 	public PolyCreateControler() {
-		timestep = (int) Math.round(this.getBasicTimeStep());
+		timestep = (int) Math.round(this.getBasicTimeStep());//round四舍五入证书，时间步骤
 
 
 		
