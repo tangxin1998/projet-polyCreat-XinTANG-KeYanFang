@@ -29,6 +29,7 @@ import com.cyberbotics.webots.controller.Receiver;
 import com.cyberbotics.webots.controller.Robot;
 import com.cyberbotics.webots.controller.Supervisor;
 import com.cyberbotics.webots.controller.TouchSensor;
+import com.yakindu.core.TimerService;
 
 import fr.unice.polytech.si4.fsm.stopwatch.RobotStateMachine;
 
@@ -97,7 +98,14 @@ public class PolyCreateControler extends Supervisor {
 		timestep = (int) Math.round(this.getBasicTimeStep());//round四舍五入证书，时间步骤
 
 		theFSM = new RobotStateMachine(); 
-		theFSM.enter();
+		TimerService timer = new TimerService();
+		theFSM.setTimerService(timer);
+		theFSM.getDoForward().subscribe(new myDoForWardObserver(this));
+		theFSM.getDoForward().subscribe(new myLeftTurnObserver(this));
+		theFSM.getDoForward().subscribe(new myRightTurnObserver(this));
+		theFSM.getDoForward().subscribe(new myIsBumpObserver(this));
+		theFSM.getDoForward().subscribe(new myBackTurnObserver(this));
+		
 
 		
 		
@@ -171,9 +179,34 @@ public class PolyCreateControler extends Supervisor {
 				ctrl.delete();
 			}
 		});
+		theFSM.enter();
 	}
 
 
+	public void doForWard() {
+		leftMotor.setVelocity(MAX_SPEED);
+		rightMotor.setVelocity(MAX_SPEED);
+	}
+	
+	
+	public void backTurn() {
+		
+	}
+	
+	public void leftTurn() {
+		
+	}
+	
+    public void rightTurn() {
+		
+	}
+    
+    
+    public void isBump() {
+		
+	}
+	
+	
 	public void openGripper() {
 		gripMotors[0].setPosition(0.5);
 		gripMotors[1].setPosition(0.5);
@@ -350,5 +383,8 @@ public class PolyCreateControler extends Supervisor {
 		this.delete();
 		super.finalize();
 	}
+
+
+	
 
 }
