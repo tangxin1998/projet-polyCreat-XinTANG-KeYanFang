@@ -31,7 +31,7 @@ import com.cyberbotics.webots.controller.Supervisor;
 import com.cyberbotics.webots.controller.TouchSensor;
 import com.yakindu.core.TimerService;
 
-import fr.unice.polytech.si4.fsm.stopwatch.RobotStateMachine;
+import fr.unice.polytech.si4.fsm.robot.RobotStateMachine;
 
 public class PolyCreateControler extends Supervisor {
 
