@@ -2,16 +2,15 @@ package fr.univcotedazur.kairos.webots.polycreate.controler;
 
 import com.yakindu.core.rx.Observer;
 
-public class myLeftTurnObserver implements Observer<Void>{
-	PolyCreateControler bot;
-	myLeftTurnObserver(PolyCreateControler ws){
-		bot=ws;
+public class myLeftTurnObserver implements Observer<Void> {
+	
+	PolyCreateControler gui;
+	myLeftTurnObserver(PolyCreateControler sw){
+		gui=sw;
 	}
-	@Override
-	public void next(Void value) {
-		// TODO Auto-generated method stub
-		System.out.println("this is a reaction to a leftTurn event");
-		bot.leftTurn();
-	}
-
+@Override
+public void next(Void value) {
+System.out.println("this is a reaction to leftTurn event");
+	gui.leftTurn();
+}
 }
