@@ -117,7 +117,7 @@ public class PolyCreateControler extends Supervisor {
 		TimerService timer = new TimerService();
 		theFSM.setTimerService(timer);
 		
-		theFSM.getDoForward().subscribe(new myDoForwardObserver(this));
+		theFSM.getDoForward().subscribe(new myDoForWardObserver(this));
 		theFSM.getLeftTurn().subscribe(new myLeftTurnObserver(this));
 		theFSM.getRightTurn().subscribe(new myRightTurnObserver(this));
 		theFSM.getBackTurn().subscribe(new myGoBackwardObserver(this));

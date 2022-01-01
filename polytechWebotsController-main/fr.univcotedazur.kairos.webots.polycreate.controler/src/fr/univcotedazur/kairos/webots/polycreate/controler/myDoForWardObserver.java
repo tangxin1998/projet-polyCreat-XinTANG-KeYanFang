@@ -2,10 +2,10 @@ package fr.univcotedazur.kairos.webots.polycreate.controler;
 
 import com.yakindu.core.rx.Observer;
 
-public class myDoForwardObserver implements Observer<Void> {
+public class myDoForWardObserver implements Observer<Void> {
 	
 	PolyCreateControler gui;
-	myDoForwardObserver(PolyCreateControler sw){
+	myDoForWardObserver(PolyCreateControler sw){
 		gui=sw;
 	}
 @Override
