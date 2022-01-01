@@ -12,21 +12,22 @@ GeneratorModel for yakindu::java {
 			targetFolder = FOLDER
 			libraryTargetFolder = "src"
 		}
+	
 		feature OutEventAPI {
-			observables = true
-			getters = false
-			}
-
-		feature Naming {
-		libraryPackage = "com.yakindu.core"
-		basePackage = "fr.unice.polytech.si4.fsm.robot"
-		typeName = "RobotStateMachine"
-		}
-		feature GeneralFeatures {
-		RuntimeService = false 
-		TimerService = true
-		synchronized = true
-		runnable = false
+	observables = true
+	getters = false
+	}
+	
+	feature Naming {
+	libraryPackage = "com.yakindu.core"
+	basePackage = "fr.unice.polytech.si4.fsm.stopwatch"
+	typeName = "RobotStateMachine"
+	}
+	feature GeneralFeatures {
+	RuntimeService = false 
+	TimerService = true
+	synchronized = true
+	runnable = false
+	}
 		}
 	}
-}

@@ -54,7 +54,7 @@ public class PolyCreateControler extends Supervisor {
 	protected JFrame jf;
 	protected JPanel jp;
 	protected JButton startWeeping,stopWeeping,startWriting,stopWriting,startMoving,stopMoving;
-	
+	protected JTextField inputPosition;
 	
 
 	/**
@@ -121,6 +121,10 @@ public class PolyCreateControler extends Supervisor {
 		theFSM.getLeftTurn().subscribe(new myLeftTurnObserver(this));
 		theFSM.getRightTurn().subscribe(new myRightTurnObserver(this));
 		theFSM.getBackTurn().subscribe(new myGoBackwardObserver(this));
+		theFSM.getCatchObject().subscribe(new CatchObjectObserver(this));
+		theFSM.getReleaseObject().subscribe(new ReleaseObjectObserver(this));
+		theFSM.getInputPlace().subscribe(new GetPlaceObserver(this));
+
 //		theFSM.getIsBump().subscribe(new myIsBumpObserver(this));
 
 		
@@ -249,6 +253,10 @@ public class PolyCreateControler extends Supervisor {
 		jp.add(startWriting);
 		jp.add(stopWriting);
 		
+		inputPosition = new JTextField();
+		jp.add(inputPosition);
+
+		
 		
 		jf.setContentPane(jp);
 		jf.setVisible(true);
@@ -314,19 +322,66 @@ public class PolyCreateControler extends Supervisor {
 	
 	public void leftTurn() {
 
+//		goBackward();
+//		passiveWait(0.5);
+//		turn(Math.PI * randdouble()+0.6);
+		System.out.println("          Left obstacle detected\n");
 		goBackward();
-		passiveWait(0.5);
-		turn(Math.PI * randdouble()+0.6);
+		passiveWait(0.1);
+		int i=0;
+//		do {
+//			turn(Math.PI * 0.2);
+//			goForward();
+//			passiveWait(0.1);
+//			turn(-Math.PI * 0.2);
+//			i++;
+//		}
+//		while (i<6);
+		while (isThereCollisionAtRight()) {
+			turn(Math.PI * 0.2);
+			goForward();
+			passiveWait(0.1);
+//			turn(-Math.PI * 0.2);
+			i++;
+		}
+		if (i>10) {
+			goBackward();
+			passiveWait(0.5);
+			turn(Math.PI * randdouble()+0.6);
+			goForward();
+		}
 		
+		
+		
+
 		
 	}
 
 	public void rightTurn() {
 		
+//		goBackward();
+//		passiveWait(0.5);
+//		turn(-Math.PI * randdouble()+0.6);
+		System.out.println("          Right obstacle detected\n");
 		goBackward();
-		passiveWait(0.5);
-		turn(-Math.PI * randdouble()+0.6);
-			
+		passiveWait(0.1);
+		int i=0;
+		while (isThereCollisionAtLeft()) {
+			turn(-Math.PI * 0.2);
+			goForward();
+			passiveWait(0.1);
+//			turn(Math.PI * 0.2);
+			i++;
+		}
+		if (i>10) {
+			goBackward();
+			passiveWait(0.5);
+			turn(-Math.PI * randdouble()+0.6);
+			goForward();
+		}
+
+		
+
 		
 	}
 	
@@ -440,18 +495,68 @@ public class PolyCreateControler extends Supervisor {
 	
 	public void catchObject() {
 		// TODO Auto-generated method stub
+		stop();
+		closeGripper();
+		passiveWait(0.5);
+		goBackward();
+		passiveWait(0.5);
+		turn(Math.PI);
+		goForward();
+		if(isThereVirtualwall()) {
+			theFSM.raiseReachDestination();
+		}
 		
+	}
+
+	
+	
+	public void searchObject() {
+		while (true) {
+			CameraRecognitionObject[] frontObjs = frontCamera.getRecognitionObjects();
+		for (CameraRecognitionObject obj : frontObjs) {
+			if (obj.getModel().equals(inputPosition.getText())){
+				double[] frontObjPos = obj.getPosition();
+				
+				System.out.println("        I saw wanted object"+obj.getModel()+" on front Camera at : "+((double)Math.round(frontObjPos[1]*1000))/10+"; "+Math.round(frontObjPos[0]*180/Math.PI));			
+			}
+			
+		}
+		}
 	}
 	
 	public void releaseObject() {
 		// TODO Auto-generated method stub
-		
+		openGripper();
+		goBackward();
+		passiveWait(0.5);
+		turn(Math.PI);
+		goForward();
 	}
 	
-	public void searchObject() {
-		// TODO Auto-generated method stub
+
+		
+	public void InputPlace() {
+		System.out.println("begin object move");
+		boolean flag=true;
+		String str1 = null;
+		while (flag) {
+			str1= inputPosition.getText();// TODO Auto-generated method stub
+			if (str1.equals("apple")||str1.equals("can")||str1.equals("water bottle")) {
+				flag=false;
+				System.out.println("we are looking for "+ str1);
+			}
+			else {flag=true;}
+		}		
+		
+		
+		
+		
+		
 		
 	}
+
+
+
 	
 	
 
