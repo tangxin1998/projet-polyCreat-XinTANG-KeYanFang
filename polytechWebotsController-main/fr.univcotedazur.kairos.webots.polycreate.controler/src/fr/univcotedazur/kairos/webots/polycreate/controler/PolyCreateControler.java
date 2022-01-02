@@ -112,7 +112,6 @@ public class PolyCreateControler extends Supervisor {
 
 		timestep = (int) Math.round(this.getBasicTimeStep());//round四舍五入，时间步骤
 
-
 		theFSM = new RobotStateMachine(); 
 		TimerService timer = new TimerService();
 		theFSM.setTimerService(timer);
@@ -253,7 +252,7 @@ public class PolyCreateControler extends Supervisor {
 		jp.add(startWriting);
 		jp.add(stopWriting);
 		
-		inputPosition = new JTextField();
+		inputPosition = new JTextField("inputPosition");
 		jp.add(inputPosition);
 
 		
@@ -327,29 +326,27 @@ public class PolyCreateControler extends Supervisor {
 //		turn(Math.PI * randdouble()+0.6);
 		System.out.println("          Left obstacle detected\n");
 		goBackward();
-		passiveWait(0.1);
+		passiveWait(0.5);
 		int i=0;
-//		do {
-//			turn(Math.PI * 0.2);
-//			goForward();
-//			passiveWait(0.1);
-//			turn(-Math.PI * 0.2);
-//			i++;
-//		}
-//		while (i<6);
-		while (isThereCollisionAtRight()) {
-			turn(Math.PI * 0.2);
+
+		while (i<10) {
+			turn(Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
-//			turn(-Math.PI * 0.2);
+			if (isThereCollisionAtRight()) {
+				turn(Math.PI * 0.3);
+				goForward();
+				passiveWait(0.5);
+			}
+			else {
+				turn(-Math.PI * 0.3);
+			}
+
 			i++;
 		}
-		if (i>10) {
-			goBackward();
-			passiveWait(0.5);
-			turn(Math.PI * randdouble()+0.6);
-			goForward();
-		}
+		goBackward();
+		passiveWait(0.5);
+		turn(Math.PI*0.2);
 		
 		
 		
@@ -359,29 +356,30 @@ public class PolyCreateControler extends Supervisor {
 
 	public void rightTurn() {
 		
-//		goBackward();
-//		passiveWait(0.5);
-//		turn(-Math.PI * randdouble()+0.6);
+
 		System.out.println("          Right obstacle detected\n");
 		goBackward();
-		passiveWait(0.1);
+		passiveWait(0.5);
 		int i=0;
-		while (isThereCollisionAtLeft()) {
-			turn(-Math.PI * 0.2);
+
+		while (i<10) {
+			turn(-Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
-//			turn(Math.PI * 0.2);
+			if (isThereCollisionAtLeft()) {
+				turn(Math.PI * 0.3);
+				goForward();
+				passiveWait(0.3);
+			}
+			else {
+				turn(Math.PI * 0.3);
+			}
+
 			i++;
 		}
-		if (i>10) {
-			goBackward();
-			passiveWait(0.5);
-			turn(-Math.PI * randdouble()+0.6);
-			goForward();
-		}
-
-		
-
+		goBackward();
+		passiveWait(0.5);
+		turn(-Math.PI*0.2);
 		
 	}
 	
@@ -496,14 +494,15 @@ public class PolyCreateControler extends Supervisor {
 	public void catchObject() {
 		// TODO Auto-generated method stub
 		stop();
+		turn(Math.PI);
 		closeGripper();
 		passiveWait(0.5);
-		goBackward();
-		passiveWait(0.5);
-		turn(Math.PI);
+//		goBackward();
+//		passiveWait(0.5);
+//		turn(Math.PI);
 		goForward();
-		if(isThereVirtualwall()) {
-			theFSM.raiseReachDestination();
+		if(isThereVirtualwall()||isThereCollisionAtLeft()||isThereCollisionAtRight()) {
+			theFSM.raiseReachDestination();;
 		}
 		
 	}
@@ -513,11 +512,22 @@ public class PolyCreateControler extends Supervisor {
 	public void searchObject() {
 		while (true) {
 			CameraRecognitionObject[] frontObjs = frontCamera.getRecognitionObjects();
-		for (CameraRecognitionObject obj : frontObjs) {
+			for (CameraRecognitionObject obj : frontObjs) {
 			if (obj.getModel().equals(inputPosition.getText())){
-				double[] frontObjPos = obj.getPosition();
-				
-				System.out.println("        I saw wanted object"+obj.getModel()+" on front Camera at : "+((double)Math.round(frontObjPos[1]*1000))/10+"; "+Math.round(frontObjPos[0]*180/Math.PI));			
+				double[] frontObjPos = obj.getPosition();				
+				System.out.println("        I saw wanted object"+obj.getModel()+" on front Camera at : "+((double)Math.round(frontObjPos[1]*1000))/10+"; "+Math.round(frontObjPos[0]*180/Math.PI));	
+				goBackward();
+			    passiveWait(0.5);
+			    turn(frontObjPos[0]);
+			      boolean str= true;
+			      while(str)
+			      {
+			       if(getObjectDistanceToGripper()<=0.1)
+			       {
+			       theFSM.raiseDetectObject();
+			       str=false;
+			       }
+			     }
 			}
 			
 		}
@@ -526,10 +536,9 @@ public class PolyCreateControler extends Supervisor {
 	
 	public void releaseObject() {
 		// TODO Auto-generated method stub
-		openGripper();
-		goBackward();
-		passiveWait(0.5);
 		turn(Math.PI);
+		openGripper();
+		passiveWait(0.5);
 		goForward();
 	}
 	

@@ -578,7 +578,7 @@ public class RobotStateMachine implements IStatemachine, ITimed {
 	
 	/* Entry action for state 'objectMoving'. */
 	private void entryAction_main_region_started_a_objectMoving() {
-		timerService.setTimer(this, 3, 100, true);
+		timerService.setTimer(this, 3, 10, true);
 	}
 	
 	/* Exit action for state 'turning right'. */
