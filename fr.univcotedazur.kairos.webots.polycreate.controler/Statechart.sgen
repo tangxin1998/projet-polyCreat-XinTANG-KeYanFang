@@ -1,0 +1,33 @@
+GeneratorModel for yakindu::java {
+
+	const PROJECT : string =
+	"fr.univcotedazur.kairos.webots.polycreate.controler"
+
+	const FOLDER : string = "src-gen"
+
+	statechart robot {
+
+		feature Outlet {
+			targetProject = PROJECT
+			targetFolder = FOLDER
+			libraryTargetFolder = "src"
+		}
+	
+		feature OutEventAPI {
+	observables = true
+	getters = false
+	}
+	
+	feature Naming {
+	libraryPackage = "com.yakindu.core"
+	basePackage = "fr.unice.polytech.si4.fsm.stopwatch"
+	typeName = "RobotStateMachine"
+	}
+	feature GeneralFeatures {
+	RuntimeService = false 
+	TimerService = true
+	synchronized = true
+	runnable = false
+	}
+		}
+	}
