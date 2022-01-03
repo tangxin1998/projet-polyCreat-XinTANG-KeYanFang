@@ -29,4 +29,4 @@ GeneratorModel for yakindu::java {
 		runnable = false
 		}
 	}
-	}
+}

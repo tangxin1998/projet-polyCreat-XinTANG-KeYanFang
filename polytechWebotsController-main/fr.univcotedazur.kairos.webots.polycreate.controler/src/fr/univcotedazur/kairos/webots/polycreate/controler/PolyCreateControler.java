@@ -329,7 +329,7 @@ public class PolyCreateControler extends Supervisor {
 		passiveWait(0.5);
 		int i=0;
 
-		while (i<10) {
+		while (i<7) {
 			turn(Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
@@ -362,7 +362,7 @@ public class PolyCreateControler extends Supervisor {
 		passiveWait(0.5);
 		int i=0;
 
-		while (i<10) {
+		while (i<7) {
 			turn(-Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
