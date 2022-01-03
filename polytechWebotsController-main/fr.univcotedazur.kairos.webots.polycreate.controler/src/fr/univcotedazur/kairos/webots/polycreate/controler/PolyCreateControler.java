@@ -22,11 +22,11 @@ import com.cyberbotics.webots.controller.DistanceSensor;
 import com.cyberbotics.webots.controller.GPS;
 import com.cyberbotics.webots.controller.LED;
 import com.cyberbotics.webots.controller.Motor;
-import com.cyberbotics.webots.controller.Node;
+//import com.cyberbotics.webots.controller.Node;
 import com.cyberbotics.webots.controller.Pen;
 import com.cyberbotics.webots.controller.PositionSensor;
 import com.cyberbotics.webots.controller.Receiver;
-import com.cyberbotics.webots.controller.Robot;
+//import com.cyberbotics.webots.controller.Robot;
 import com.cyberbotics.webots.controller.Supervisor;
 import com.cyberbotics.webots.controller.TouchSensor;
 import com.yakindu.core.TimerService;
@@ -53,7 +53,7 @@ public class PolyCreateControler extends Supervisor {
 	
 	protected JFrame jf;
 	protected JPanel jp;
-	protected JButton startWeeping,stopWeeping,startWriting,stopWriting,startMoving,stopMoving;
+	protected JButton startWeeping,stopWeeping,startWriting,stopWriting,leftButton,rightButton;
 	protected JTextField inputPosition;
 	
 
@@ -112,6 +112,7 @@ public class PolyCreateControler extends Supervisor {
 
 		timestep = (int) Math.round(this.getBasicTimeStep());//round四舍五入，时间步骤
 
+
 		theFSM = new RobotStateMachine(); 
 		TimerService timer = new TimerService();
 		theFSM.setTimerService(timer);
@@ -123,14 +124,12 @@ public class PolyCreateControler extends Supervisor {
 		theFSM.getCatchObject().subscribe(new CatchObjectObserver(this));
 		theFSM.getReleaseObject().subscribe(new ReleaseObjectObserver(this));
 		theFSM.getInputPlace().subscribe(new GetPlaceObserver(this));
+		theFSM.getDrawCircle().subscribe(new myDrawCircleObserver(this));
+		theFSM.getDoSweeping().subscribe(new myDoSweepingObserver(this));
 
-//		theFSM.getIsBump().subscribe(new myIsBumpObserver(this));
 
 		
 
-		
-		
-		
 		
 		pen = createPen("pen");
 
@@ -211,48 +210,31 @@ public class PolyCreateControler extends Supervisor {
 		
 		jp =new JPanel();
 		
-		startMoving =new JButton("startMoving");
-		startMoving.addActionListener(new ActionListener() {
+		leftButton =new JButton("startWriting");
+		leftButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				theFSM.raiseMoveButton();
+				theFSM.raiseLeftButton();
+				System.out.println("leftClick");
 			}
 		});
 		
 		
 		
-		stopMoving =new JButton("stopMoving");
-		startMoving.addActionListener(new ActionListener() {
+		rightButton =new JButton("startMoving");
+		rightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				theFSM.raiseStopMoving();
-			}
-		});
-		
-		startWriting =new JButton("startWriting");
-		startWriting.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				theFSM.raiseWriteButton();
+				theFSM.raiseRightButton();
+				System.out.println("rightClick");
 			}
 		});
 		
 		
+		jp.add(leftButton);
+		jp.add(rightButton);
 		
-		stopWriting =new JButton("stopWriting");
-		stopWriting.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				theFSM.raiseStopWriting();
-			}
-		});
-		
-		jp.add(startMoving);
-		jp.add(stopMoving);
-		jp.add(startWriting);
-		jp.add(stopWriting);
-		
-		inputPosition = new JTextField("inputPosition");
+		inputPosition = new JTextField("inputObject");
 		jp.add(inputPosition);
 
 		
@@ -307,8 +289,8 @@ public class PolyCreateControler extends Supervisor {
 	}
 
 	public void goBackward() {
-		leftMotor.setVelocity(-HALF_SPEED);
-		rightMotor.setVelocity(-HALF_SPEED);
+		leftMotor.setVelocity(-0.6*MAX_SPEED);
+		rightMotor.setVelocity(-0.6*MAX_SPEED);
 		passiveWait(0.5);
 	
 	}
@@ -319,12 +301,14 @@ public class PolyCreateControler extends Supervisor {
 		turn(Math.PI);
 	}
 	
+	
+	
 	public void leftTurn() {
 
 //		goBackward();
 //		passiveWait(0.5);
 //		turn(Math.PI * randdouble()+0.6);
-		System.out.println("          Left obstacle detected\n");
+		System.out.println("          right obstacle detected\n");
 		goBackward();
 		passiveWait(0.5);
 		int i=0;
@@ -333,7 +317,7 @@ public class PolyCreateControler extends Supervisor {
 			turn(Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
-			if (isThereCollisionAtRight()) {
+			if (isThereCollisionAtRight()|| frontRightDistanceSensor.getValue() < 250 ||frontDistanceSensor.getValue() < 250) {
 				turn(Math.PI * 0.3);
 				goForward();
 				passiveWait(0.5);
@@ -341,23 +325,22 @@ public class PolyCreateControler extends Supervisor {
 			else {
 				turn(-Math.PI * 0.3);
 			}
-
 			i++;
 		}
 		goBackward();
 		passiveWait(0.5);
-		turn(Math.PI*0.2);
+		turn(Math.PI * randdouble()+0.6);
 		
-		
-		
-
 		
 	}
 
 	public void rightTurn() {
+//		goBackward();
+//		passiveWait(0.5);
+//		turn(-Math.PI * randdouble()+0.6);
 		
 
-		System.out.println("          Right obstacle detected\n");
+		System.out.println("          Left obstacle detected\n");
 		goBackward();
 		passiveWait(0.5);
 		int i=0;
@@ -366,10 +349,10 @@ public class PolyCreateControler extends Supervisor {
 			turn(-Math.PI * 0.3);
 			goForward();
 			passiveWait(0.1);
-			if (isThereCollisionAtLeft()) {
-				turn(Math.PI * 0.3);
+			if (isThereCollisionAtLeft() || frontLeftDistanceSensor.getValue() < 250) {
+				turn(-Math.PI * 0.3);
 				goForward();
-				passiveWait(0.3);
+				passiveWait(0.5);
 			}
 			else {
 				turn(Math.PI * 0.3);
@@ -379,7 +362,7 @@ public class PolyCreateControler extends Supervisor {
 		}
 		goBackward();
 		passiveWait(0.5);
-		turn(-Math.PI*0.2);
+		turn(-Math.PI * randdouble()+0.6);
 		
 	}
 	
@@ -396,7 +379,6 @@ public class PolyCreateControler extends Supervisor {
 				 * The position and orientation are expressed relatively to the camera (the relative position is the one of the center of the object which can differ from its origin) and the units are meter and radian.
 				 * https://www.cyberbotics.com/doc/reference/camera?tab-language=python#wb_camera_has_recognition
 				 */
-				Node anObj = getFromDef("can"); //should not be there, only to have another orientation for testing...
 				passiveWait(0.1);
 				
 				
@@ -408,7 +390,6 @@ public class PolyCreateControler extends Supervisor {
 				CameraRecognitionObject[] backObjs = backCamera.getRecognitionObjects();
 				if (backObjs.length > 0) {
 					CameraRecognitionObject obj = backObjs[0];
-					int oid = obj.getId();
 					double[] backObjPos = obj.getPosition();
 					/**
 					 * The position and orientation are expressed relatively to the camera (the relative position is the one of the center of the object which can differ from its origin) and the units are meter and radian.
@@ -437,11 +418,7 @@ public class PolyCreateControler extends Supervisor {
 					goForward();
 				}
 				flushIRReceiver();
-				
-				
-				
-				
-				
+					
 			}
 
 		}catch (Exception e) {
@@ -494,15 +471,14 @@ public class PolyCreateControler extends Supervisor {
 	public void catchObject() {
 		// TODO Auto-generated method stub
 		stop();
-		turn(Math.PI);
 		closeGripper();
 		passiveWait(0.5);
-//		goBackward();
-//		passiveWait(0.5);
-//		turn(Math.PI);
+		goBackward();
+		passiveWait(0.5);
+		turn(Math.PI);
 		goForward();
-		if(isThereVirtualwall()||isThereCollisionAtLeft()||isThereCollisionAtRight()) {
-			theFSM.raiseReachDestination();;
+		if(isThereVirtualwall()) {
+			theFSM.raiseReachDestination();
 		}
 		
 	}
@@ -512,22 +488,11 @@ public class PolyCreateControler extends Supervisor {
 	public void searchObject() {
 		while (true) {
 			CameraRecognitionObject[] frontObjs = frontCamera.getRecognitionObjects();
-			for (CameraRecognitionObject obj : frontObjs) {
+		for (CameraRecognitionObject obj : frontObjs) {
 			if (obj.getModel().equals(inputPosition.getText())){
-				double[] frontObjPos = obj.getPosition();				
-				System.out.println("        I saw wanted object"+obj.getModel()+" on front Camera at : "+((double)Math.round(frontObjPos[1]*1000))/10+"; "+Math.round(frontObjPos[0]*180/Math.PI));	
-				goBackward();
-			    passiveWait(0.5);
-			    turn(frontObjPos[0]);
-			      boolean str= true;
-			      while(str)
-			      {
-			       if(getObjectDistanceToGripper()<=0.1)
-			       {
-			       theFSM.raiseDetectObject();
-			       str=false;
-			       }
-			     }
+				double[] frontObjPos = obj.getPosition();
+				
+				System.out.println("        I saw wanted object"+obj.getModel()+" on front Camera at : "+((double)Math.round(frontObjPos[1]*1000))/10+"; "+Math.round(frontObjPos[0]*180/Math.PI));			
 			}
 			
 		}
@@ -536,15 +501,16 @@ public class PolyCreateControler extends Supervisor {
 	
 	public void releaseObject() {
 		// TODO Auto-generated method stub
-		turn(Math.PI);
 		openGripper();
+		goBackward();
 		passiveWait(0.5);
+		turn(Math.PI);
 		goForward();
 	}
 	
 
 		
-	public void InputPlace() {
+	public void inputPlace() {
 		System.out.println("begin object move");
 		boolean flag=true;
 		String str1 = null;
@@ -556,19 +522,30 @@ public class PolyCreateControler extends Supervisor {
 			}
 			else {flag=true;}
 		}		
-		
-		
-		
-		
-		
-		
+				
 	}
-
+	
+	public void drawCircle() {
+		leftButton.setText("Return");
+		rightButton.setText("");
+//		boolean flag=true;
+//		while(flag) {
+//			if(isThereVirtualwall()||isThereCollisionAtLeft() || frontLeftDistanceSensor.getValue() < 250||isThereCollisionAtRight()|| frontRightDistanceSensor.getValue() < 250 ||frontDistanceSensor.getValue() < 250) {
+//				System.out.print("there is the obstacle so that i cannot draw");
+//			}
+//			else
+//			{
+//				pen.setInkColor(0x0000FF,1);
+//				leftMotor.setVelocity(HALF_SPEED);
+//				rightMotor.setVelocity(HALF_SPEED*0.2);
+//			}
+//		
+//		}	
+	}
+	
 
 
 	
-	
-
 
 
 	/**
@@ -589,6 +566,7 @@ public class PolyCreateControler extends Supervisor {
 	public static void main(String[] args) {
 		PolyCreateControler controler = new PolyCreateControler();
 		controler.isBump();
+		
 		}
 		
 
@@ -600,17 +578,14 @@ public class PolyCreateControler extends Supervisor {
 
 
 
-	
 
 
+	public void doSweeping() {
+		// TODO Auto-generated method stub
+		leftButton.setText("startWriting");
+		rightButton.setText("startMoving");
+	}
 
 
-
-	
-
-
-
-	
-	
 
 }

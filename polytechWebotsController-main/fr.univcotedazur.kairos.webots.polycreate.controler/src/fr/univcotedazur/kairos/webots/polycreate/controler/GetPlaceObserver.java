@@ -11,6 +11,6 @@ public class GetPlaceObserver implements Observer<Void> {
 @Override
 public void next(Void value) {
 System.out.println("this is a reaction to a InputPlace event");
-	gui.InputPlace();
+	gui.inputPlace();
 }
 }
